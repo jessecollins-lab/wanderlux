@@ -3,14 +3,29 @@
 // Set ANTHROPIC_API_KEY in your Netlify environment variables.
 
 exports.handler = async (event) => {
+  // Handle preflight CORS
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+      },
+      body: "",
+    };
+  }
+
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
+    console.error("ANTHROPIC_API_KEY is not set");
     return {
       statusCode: 500,
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify({ error: "ANTHROPIC_API_KEY environment variable not set." }),
     };
   }
@@ -19,7 +34,11 @@ exports.handler = async (event) => {
   try {
     body = JSON.parse(event.body);
   } catch {
-    return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON body" }) };
+    return {
+      statusCode: 400,
+      headers: { "Access-Control-Allow-Origin": "*" },
+      body: JSON.stringify({ error: "Invalid JSON body" }),
+    };
   }
 
   try {
@@ -39,14 +58,23 @@ exports.handler = async (event) => {
 
     const data = await response.json();
 
+    if (!response.ok) {
+      console.error("Anthropic API error:", JSON.stringify(data));
+    }
+
     return {
       statusCode: response.status,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
       body: JSON.stringify(data),
     };
   } catch (err) {
+    console.error("Function error:", err.message);
     return {
       statusCode: 500,
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify({ error: err.message }),
     };
   }
