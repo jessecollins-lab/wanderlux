@@ -33,10 +33,12 @@ const STYLES = `
     overflow-x: hidden;
   }
 
+  /* scrollbar */
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
+  /* ── LAYOUT ── */
   .app-shell { display: flex; min-height: 100vh; }
 
   .sidebar {
@@ -94,6 +96,7 @@ const STYLES = `
 
   .main { margin-left: 72px; flex: 1; min-height: 100vh; }
 
+  /* ── TOP BAR ── */
   .topbar {
     height: 60px;
     border-bottom: 1px solid var(--border);
@@ -126,6 +129,7 @@ const STYLES = `
   .dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation: blink 2s infinite; }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
+  /* ── PAGE ── */
   .page { padding: 36px; max-width: 1100px; }
   .page-title {
     font-family: 'Cormorant Garamond', serif;
@@ -154,6 +158,7 @@ const STYLES = `
     background: linear-gradient(to right, var(--border), transparent);
   }
 
+  /* ── CARDS ── */
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -174,6 +179,7 @@ const STYLES = `
   .card-body { font-size: 13.5px; color: var(--muted); line-height: 1.8; white-space: pre-wrap; }
   .card-body strong { color: var(--cream); }
 
+  /* ── FORM ── */
   .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 20px; }
   .field { display: flex; flex-direction: column; gap: 7px; }
   .field label { font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
@@ -196,6 +202,7 @@ const STYLES = `
   .field select option { background: #0e1525; }
   .field textarea { resize: vertical; min-height: 76px; }
 
+  /* ── BUTTONS ── */
   .btn-gold {
     background: linear-gradient(135deg, var(--gold), var(--gold-lt));
     color: var(--bg);
@@ -237,6 +244,7 @@ const STYLES = `
   }
   .btn-danger:hover { background: rgba(245,101,101,0.2); }
 
+  /* ── UPLOAD ── */
   .upload-zone {
     border: 1.5px dashed var(--border);
     border-radius: 10px;
@@ -256,6 +264,7 @@ const STYLES = `
     color: var(--gold-lt);
   }
 
+  /* ── LOADING ── */
   .loading {
     display: flex; flex-direction: column; align-items: center;
     justify-content: center; padding: 60px; gap: 18px;
@@ -276,6 +285,7 @@ const STYLES = `
     text-align: center;
   }
 
+  /* ── RESULTS GRID ── */
   .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
   .result-card {
     background: var(--surface);
@@ -298,6 +308,7 @@ const STYLES = `
   .rc-body { font-size: 13px; color: var(--muted); line-height: 1.8; white-space: pre-wrap; }
   .rc-body strong { color: var(--cream); }
 
+  /* ── DASHBOARD TRIP CARDS ── */
   .trip-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-top: 24px; }
   .trip-card {
     background: var(--surface);
@@ -341,6 +352,7 @@ const STYLES = `
   .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
   .empty-text { font-size: 14px; line-height: 1.7; }
 
+  /* ── WEATHER ── */
   .weather-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
   .weather-card {
     background: var(--surface2);
@@ -355,6 +367,7 @@ const STYLES = `
   .w-desc { font-size: 11px; color: var(--muted); margin-top: 4px; }
   .w-detail { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
+  /* ── SCHEDULE ── */
   .schedule-day {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -394,6 +407,7 @@ const STYLES = `
   .si-title { font-size: 13px; color: var(--cream); font-weight: 500; margin-bottom: 3px; }
   .si-desc { font-size: 12px; color: var(--muted); }
 
+  /* ── PACKING ── */
   .pack-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
   .pack-cat {
     background: var(--surface);
@@ -450,6 +464,7 @@ const STYLES = `
   }
   .pack-bar { height: 100%; background: linear-gradient(to right, var(--gold), var(--gold-lt)); border-radius: 100px; transition: width 0.3s; }
 
+  /* ── TABS ── */
   .tabs { display: flex; gap: 4px; margin-bottom: 28px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
   .tab {
     background: none;
@@ -466,6 +481,7 @@ const STYLES = `
   .tab:hover { color: var(--cream); }
   .tab.active { color: var(--gold-lt); border-bottom-color: var(--gold); }
 
+  /* ── SHARE TOAST ── */
   .toast {
     position: fixed;
     bottom: 28px;
@@ -481,6 +497,7 @@ const STYLES = `
   }
   @keyframes toastIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:none;} }
 
+  /* ── RESPONSIVE ── */
   @media (max-width: 700px) {
     .sidebar { width: 0; overflow: hidden; }
     .main { margin-left: 0; }
@@ -523,13 +540,16 @@ function formatDate(dateStr) {
 }
 function daysBetween(a, b) {
   if (!a || !b) return 0;
-  return Math.max(0, Math.round((new Date(b) - new Date(a)) / 86400000));
+  const diff = new Date(b) - new Date(a);
+  return Math.max(0, Math.round(diff / 86400000));
 }
 function getDaysList(start, end) {
   const days = [];
   const s = new Date(start + "T00:00:00");
   const e = new Date(end + "T00:00:00");
-  for (let d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) days.push(new Date(d));
+  for (let d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {
+    days.push(new Date(d));
+  }
   return days;
 }
 function html(str = "") {
@@ -537,7 +557,7 @@ function html(str = "") {
 }
 
 // ─────────────────────────────────────────────
-// API — calls our Netlify serverless function
+// API CALL
 // ─────────────────────────────────────────────
 async function callClaude(prompt) {
   const res = await fetch("/api/claude", {
@@ -549,12 +569,12 @@ async function callClaude(prompt) {
   });
   const data = await res.json();
   if (data.error) throw new Error(data.error);
-  const text = data.content?.map((c) => c.text || "").join("") || "";
+  const text = data.content?.map(c => c.text || "").join("") || "";
   return text.replace(/```json|```/g, "").trim();
 }
 
 // ─────────────────────────────────────────────
-// STORAGE — localStorage for Netlify
+// STORAGE HELPERS
 // ─────────────────────────────────────────────
 function saveTrip(trip) {
   try {
@@ -564,9 +584,8 @@ function saveTrip(trip) {
   } catch (e) { console.error(e); }
 }
 function loadAllTrips() {
-  try {
-    return JSON.parse(localStorage.getItem("wanderlux_trips") || "{}");
-  } catch { return {}; }
+  try { return JSON.parse(localStorage.getItem("wanderlux_trips") || "{}"); }
+  catch { return {}; }
 }
 function loadTrips() {
   const all = loadAllTrips();
@@ -583,6 +602,7 @@ function deleteTrip(id) {
 // ─────────────────────────────────────────────
 // COMPONENTS
 // ─────────────────────────────────────────────
+
 function Spinner({ msg }) {
   return (
     <div className="loading">
@@ -603,16 +623,18 @@ function ResultCard({ icon, title, content, wide, delay }) {
   );
 }
 
-// ─── DASHBOARD ────────────────────────────────
+// ─── DASHBOARD PAGE ───────────────────────────
 function DashboardPage({ trips, onSelectTrip, onNewTrip, onDeleteTrip }) {
   return (
     <div className="page">
       <div className="page-title">Your <em>Journeys</em></div>
       <div className="page-sub">All your planned trips, saved and ready. Select one to explore your guide or start a new adventure.</div>
+
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div className="section-tag">Saved Trips</div>
         <button className="btn-gold" onClick={onNewTrip} style={{ marginBottom: 16 }}>+ New Trip</button>
       </div>
+
       {trips.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon">✈️</div>
@@ -649,7 +671,7 @@ function DashboardPage({ trips, onSelectTrip, onNewTrip, onDeleteTrip }) {
 
 // ─── PLAN PAGE ────────────────────────────────
 function PlanPage({ onTripSaved }) {
-  const [form, setForm] = useState({ from: "", to: "", departDate: "", returnDate: "", airline: "", flightNumber: "", hotel: "", interests: "" });
+  const [form, setForm] = useState({ from:"", to:"", departDate:"", returnDate:"", airline:"", flightNumber:"", hotel:"", interests:"" });
   const [files, setFiles] = useState([]);
   const [drag, setDrag] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -659,47 +681,45 @@ function PlanPage({ onTripSaved }) {
   const timerRef = useRef();
 
   const upd = (k, v) => setForm(p => ({ ...p, [k]: v }));
+
   const handleFiles = (fl) => setFiles(p => [...p, ...Array.from(fl).map(f => f.name)]);
 
   const startMsgs = () => {
     let i = 0; setLoadMsg(LOADING_MSGS[0]);
-    timerRef.current = setInterval(() => { i = (i + 1) % LOADING_MSGS.length; setLoadMsg(LOADING_MSGS[i]); }, 2000);
+    timerRef.current = setInterval(() => { i = (i+1) % LOADING_MSGS.length; setLoadMsg(LOADING_MSGS[i]); }, 2000);
   };
 
   const generate = async () => {
     if (!form.from || !form.to) return;
     setLoading(true); setResults(null); startMsgs();
 
-    const prompt = `You are an expert travel concierge. Respond ONLY with a valid JSON object, no markdown, no extra text.
+    const prompt1 = `Travel concierge. Respond ONLY with valid JSON, no markdown.
+Trip: ${form.from} → ${form.to}, ${form.departDate||"?"} to ${form.returnDate||"?"}, Hotel: ${form.hotel||"city center"}, Interests: ${form.interests||"general"}
+Return ONLY this JSON:
+{"transport":"2 paragraphs: airport to city options, costs, time.","layover":"1 paragraph: airport tips.","timezone":"1 paragraph: time difference and jet lag tip.","currency":"1 paragraph: currency, tipping, cards.","apps":"**App** - description. List 5 apps.","attractions":"1. **Name** - description. List 6 attractions.","tips":"• tip. List 5 insider tips."}`;
 
-Trip: ${form.from} → ${form.to}
-Dates: ${form.departDate || "?"} to ${form.returnDate || "?"}
-Flight: ${form.airline} ${form.flightNumber}
-Hotel: ${form.hotel || "?"}
-Interests: ${form.interests || "general"}
-Documents: ${files.join(", ") || "none"}
-
-Return JSON with exactly these keys:
-{
-  "transport": "3-4 paragraph guide on best ways from airport to city/hotel.",
-  "layover": "2-3 paragraphs on layover tips or airport transit tips.",
-  "timezone": "2-3 paragraphs on time difference, jet lag tips.",
-  "currency": "2-3 paragraphs on exchange rate context, tipping culture, card acceptance.",
-  "apps": "5-7 essential apps as a bulleted list. **App Name** - one sentence description.",
-  "attractions": "6-8 attractions as a numbered list. **Name** - 2 sentences each.",
-  "tips": "5-6 insider tips as a bulleted list. Cultural etiquette, safety, seasonal advice.",
-  "weather_forecast": [{"day":"Mon","date":"Jan 1","high_f":72,"low_f":58,"condition":"Sunny","humidity":"45%","tip":"Perfect for outdoor sightseeing"}],
-  "packing": {"Clothing":["item1"],"Toiletries":["item1"],"Tech":["item1"],"Documents":["item1"],"Extras":["item1"]}
-}`;
+    const prompt2 = `Travel data. Respond ONLY with valid JSON, no markdown.
+Destination: ${form.to}, Dates: ${form.departDate||"?"} to ${form.returnDate||"?"}, Interests: ${form.interests||"general"}
+Return ONLY this JSON:
+{"weather_forecast":[{"day":"Mon","date":"Jan 1","high_f":72,"low_f":58,"condition":"Sunny","humidity":"45%","tip":"Great for sightseeing"}],"packing":{"Clothing":["item"],"Toiletries":["item"],"Tech":["item"],"Documents":["item"],"Extras":["item"]}}
+weather_forecast: 5 days realistic for destination/season. packing: 5 categories, 6 items each specific to this trip.`;
 
     try {
-      const text = await callClaude(prompt);
-      const data = JSON.parse(text);
-      const trip = { ...form, files, id: Date.now().toString(), createdAt: Date.now(), guide: data };
+      const [text1, text2] = await Promise.all([callClaude(prompt1), callClaude(prompt2)]);
+      const data1 = JSON.parse(text1);
+      const data2 = JSON.parse(text2);
+      const data = { ...data1, ...data2 };
+      const trip = {
+        ...form, files,
+        id: Date.now().toString(),
+        createdAt: Date.now(),
+        guide: data,
+      };
       saveTrip(trip);
       setResults(trip);
       onTripSaved(trip);
     } catch (e) {
+      console.error(e);
       setResults({ guide: { transport: "Could not generate guide. Please try again." } });
     } finally {
       clearInterval(timerRef.current);
@@ -710,39 +730,43 @@ Return JSON with exactly these keys:
   return (
     <div className="page">
       <div className="page-title">Plan a <em>New Journey</em></div>
-      <div className="page-sub">Enter your trip details and our AI concierge will build a comprehensive travel guide.</div>
+      <div className="page-sub">Enter your trip details below and our AI concierge will build a comprehensive travel guide.</div>
+
       <div className="section-tag">Trip Details</div>
       <div className="card" style={{ marginBottom: 24 }}>
         <div className="form-grid">
-          <div className="field"><label>Flying From</label><input placeholder="e.g. New York, JFK" value={form.from} onChange={e => upd("from", e.target.value)} /></div>
-          <div className="field"><label>Destination</label><input placeholder="e.g. Paris, CDG" value={form.to} onChange={e => upd("to", e.target.value)} /></div>
-          <div className="field"><label>Departure</label><input type="date" value={form.departDate} onChange={e => upd("departDate", e.target.value)} /></div>
-          <div className="field"><label>Return</label><input type="date" value={form.returnDate} onChange={e => upd("returnDate", e.target.value)} /></div>
-          <div className="field"><label>Airline</label><input placeholder="e.g. Air France" value={form.airline} onChange={e => upd("airline", e.target.value)} /></div>
-          <div className="field"><label>Flight Number</label><input placeholder="e.g. AF 007" value={form.flightNumber} onChange={e => upd("flightNumber", e.target.value)} /></div>
-          <div className="field"><label>Hotel / Area</label><input placeholder="e.g. Le Marais, 4th Arr." value={form.hotel} onChange={e => upd("hotel", e.target.value)} /></div>
-          <div className="field"><label>Interests</label><input placeholder="e.g. food, art, hiking, nightlife" value={form.interests} onChange={e => upd("interests", e.target.value)} /></div>
+          <div className="field"><label>Flying From</label><input placeholder="e.g. New York, JFK" value={form.from} onChange={e=>upd("from",e.target.value)} /></div>
+          <div className="field"><label>Destination</label><input placeholder="e.g. Paris, CDG" value={form.to} onChange={e=>upd("to",e.target.value)} /></div>
+          <div className="field"><label>Departure</label><input type="date" value={form.departDate} onChange={e=>upd("departDate",e.target.value)} /></div>
+          <div className="field"><label>Return</label><input type="date" value={form.returnDate} onChange={e=>upd("returnDate",e.target.value)} /></div>
+          <div className="field"><label>Airline</label><input placeholder="e.g. Air France" value={form.airline} onChange={e=>upd("airline",e.target.value)} /></div>
+          <div className="field"><label>Flight Number</label><input placeholder="e.g. AF 007" value={form.flightNumber} onChange={e=>upd("flightNumber",e.target.value)} /></div>
+          <div className="field"><label>Hotel / Area</label><input placeholder="e.g. Le Marais, 4th Arr." value={form.hotel} onChange={e=>upd("hotel",e.target.value)} /></div>
+          <div className="field"><label>Interests</label><input placeholder="e.g. food, art, hiking, nightlife" value={form.interests} onChange={e=>upd("interests",e.target.value)} /></div>
         </div>
+
         <div className="field">
           <label>Upload Documents (optional)</label>
-          <div className={`upload-zone${drag ? " drag" : ""}`}
-            onClick={() => fileRef.current.click()}
-            onDragOver={e => { e.preventDefault(); setDrag(true); }}
-            onDragLeave={() => setDrag(false)}
-            onDrop={e => { e.preventDefault(); setDrag(false); handleFiles(e.dataTransfer.files); }}>
-            <div style={{ fontSize: 26, marginBottom: 8 }}>🗂</div>
-            <div style={{ fontSize: 13, color: "var(--muted)" }}>
-              <strong style={{ color: "var(--cream)", display: "block", marginBottom: 4 }}>Drop boarding passes, hotel confirmations & itineraries</strong>
+          <div className={`upload-zone${drag?" drag":""}`}
+            onClick={()=>fileRef.current.click()}
+            onDragOver={e=>{e.preventDefault();setDrag(true);}}
+            onDragLeave={()=>setDrag(false)}
+            onDrop={e=>{e.preventDefault();setDrag(false);handleFiles(e.dataTransfer.files);}}>
+            <div style={{fontSize:26,marginBottom:8}}>🗂</div>
+            <div style={{fontSize:13,color:"var(--muted)"}}>
+              <strong style={{color:"var(--cream)",display:"block",marginBottom:4}}>Drop boarding passes, hotel confirmations & itineraries</strong>
               PDF, image or text — drag & drop or click to browse
             </div>
-            {files.length > 0 && <div className="upload-tags">{files.map((f, i) => <span key={i} className="tag">📎 {f}</span>)}</div>}
-            <input ref={fileRef} type="file" multiple style={{ display: "none" }} onChange={e => handleFiles(e.target.files)} />
+            {files.length>0&&<div className="upload-tags">{files.map((f,i)=><span key={i} className="tag">📎 {f}</span>)}</div>}
+            <input ref={fileRef} type="file" multiple style={{display:"none"}} onChange={e=>handleFiles(e.target.files)} />
           </div>
         </div>
-        <button className="btn-gold" style={{ width: "100%", marginTop: 20 }} onClick={generate} disabled={!form.from || !form.to || loading}>
+
+        <button className="btn-gold" style={{width:"100%",marginTop:20}} onClick={generate} disabled={!form.from||!form.to||loading}>
           {loading ? "Generating your guide…" : "✦ Generate My Travel Guide"}
         </button>
       </div>
+
       {loading && <Spinner msg={loadMsg} />}
       {results && <GuideView trip={results} />}
     </div>
@@ -755,27 +779,29 @@ function GuideView({ trip }) {
   const g = trip.guide || {};
 
   return (
-    <div style={{ marginTop: 8 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+    <div style={{marginTop:8}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
         <div>
-          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "1.3rem", color: "var(--white)" }}>
-            {trip.from} <span style={{ color: "var(--gold)" }}>→</span> {trip.to}
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"1.3rem",color:"var(--white)"}}>
+            {trip.from} <span style={{color:"var(--gold)"}}>→</span> {trip.to}
           </div>
-          <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 3 }}>
-            {formatDate(trip.departDate)} – {formatDate(trip.returnDate)} · {daysBetween(trip.departDate, trip.returnDate)} nights
+          <div style={{fontSize:12,color:"var(--muted)",marginTop:3}}>
+            {formatDate(trip.departDate)} – {formatDate(trip.returnDate)} · {daysBetween(trip.departDate,trip.returnDate)} nights
           </div>
         </div>
-        <button className="btn-ghost" onClick={() => {
-          const text = `My trip: ${trip.from} → ${trip.to}\n${formatDate(trip.departDate)} – ${formatDate(trip.returnDate)}\nGenerated by Wanderlux`;
+        <button className="btn-ghost" onClick={()=>{
+          const text = `My trip: ${trip.from} → ${trip.to}\n${formatDate(trip.departDate)} – ${formatDate(trip.returnDate)}\nGenerated by Travel Companion AI`;
           navigator.clipboard?.writeText(text);
         }}>Share ↗</button>
       </div>
+
       <div className="tabs">
-        {[["guide", "🗺️ Guide"], ["weather", "🌤️ Weather"], ["schedule", "📅 Schedule"], ["packing", "🎒 Packing"]].map(([k, l]) => (
-          <button key={k} className={`tab${tab === k ? " active" : ""}`} onClick={() => setTab(k)}>{l}</button>
+        {[["guide","🗺️ Guide"],["weather","🌤️ Weather"],["schedule","📅 Schedule"],["packing","🎒 Packing"]].map(([k,l])=>(
+          <button key={k} className={`tab${tab===k?" active":""}`} onClick={()=>setTab(k)}>{l}</button>
         ))}
       </div>
-      {tab === "guide" && (
+
+      {tab==="guide" && (
         <div className="results-grid">
           <ResultCard icon="🚇" title="Airport to City" content={g.transport} wide delay={0} />
           <ResultCard icon="✈️" title="Layover & Transit Tips" content={g.layover} delay={80} />
@@ -786,9 +812,9 @@ function GuideView({ trip }) {
           <ResultCard icon="💡" title="Insider Tips" content={g.tips} wide delay={280} />
         </div>
       )}
-      {tab === "weather" && <WeatherTab forecast={g.weather_forecast} destination={trip.to} />}
-      {tab === "schedule" && <ScheduleTab trip={trip} guide={g} />}
-      {tab === "packing" && <PackingTab packing={g.packing} />}
+      {tab==="weather" && <WeatherTab forecast={g.weather_forecast} destination={trip.to} />}
+      {tab==="schedule" && <ScheduleTab trip={trip} guide={g} />}
+      {tab==="packing" && <PackingTab packing={g.packing} />}
     </div>
   );
 }
@@ -796,19 +822,19 @@ function GuideView({ trip }) {
 // ─── WEATHER TAB ─────────────────────────────
 function WeatherTab({ forecast, destination }) {
   if (!forecast || !Array.isArray(forecast)) {
-    return <div style={{ color: "var(--muted)", padding: "40px 0", textAlign: "center" }}>No weather data available.</div>;
+    return <div style={{color:"var(--muted)",padding:"40px 0",textAlign:"center"}}>No weather data available.</div>;
   }
-  const avgHigh = Math.round(forecast.reduce((s, d) => s + (d.high_f || 0), 0) / forecast.length);
-  const avgLow = Math.round(forecast.reduce((s, d) => s + (d.low_f || 0), 0) / forecast.length);
+  const avgHigh = Math.round(forecast.reduce((s,d)=>s+(d.high_f||0),0)/forecast.length);
+  const avgLow = Math.round(forecast.reduce((s,d)=>s+(d.low_f||0),0)/forecast.length);
   return (
     <div>
       <div className="section-tag">5-Day Forecast — {destination}</div>
-      <div className="weather-grid" style={{ marginBottom: 24 }}>
-        {forecast.map((d, i) => (
-          <div className="weather-card" key={i} style={{ animationDelay: `${i * 60}ms` }}>
+      <div className="weather-grid" style={{marginBottom:24}}>
+        {forecast.map((d,i) => (
+          <div className="weather-card" key={i} style={{animationDelay:`${i*60}ms`}}>
             <div className="w-day">{d.day} · {d.date}</div>
             <div className="w-icon">{weatherIcon(d.condition)}</div>
-            <div className="w-temp">{d.high_f}°<span style={{ fontSize: "1rem", color: "var(--muted)" }}>/{d.low_f}°</span></div>
+            <div className="w-temp">{d.high_f}°<span style={{fontSize:"1rem",color:"var(--muted)"}}>/{d.low_f}°</span></div>
             <div className="w-desc">{d.condition}</div>
             <div className="w-detail">💧 {d.humidity}</div>
           </div>
@@ -819,8 +845,10 @@ function WeatherTab({ forecast, destination }) {
         <div className="card-body">
           <strong>Average High:</strong> {avgHigh}°F · <strong>Average Low:</strong> {avgLow}°F
           <br /><br />
-          {forecast.map((d, i) => (
-            <div key={i} style={{ marginBottom: 8 }}><strong>{d.day} ({d.date}):</strong> {d.tip}</div>
+          {forecast.map((d,i)=>(
+            <div key={i} style={{marginBottom:8}}>
+              <strong>{d.day} ({d.date}):</strong> {d.tip}
+            </div>
           ))}
         </div>
       </div>
@@ -838,12 +866,12 @@ function ScheduleTab({ trip, guide }) {
   const generateSchedule = async () => {
     setLoading(true);
     let i = 0; setLoadMsg(LOADING_MSGS[0]);
-    timerRef.current = setInterval(() => { i = (i + 1) % LOADING_MSGS.length; setLoadMsg(LOADING_MSGS[i]); }, 2000);
+    timerRef.current = setInterval(()=>{ i=(i+1)%LOADING_MSGS.length; setLoadMsg(LOADING_MSGS[i]); }, 2000);
 
     const days = getDaysList(trip.departDate, trip.returnDate);
     const prompt = `Create a detailed day-by-day itinerary for a trip to ${trip.to} from ${trip.departDate} to ${trip.returnDate}.
 Interests: ${trip.interests || "general sightseeing"}. Hotel: ${trip.hotel || "city center"}.
-Known attractions: ${guide.attractions?.substring(0, 300) || ""}.
+Known attractions: ${guide.attractions?.substring(0,300) || ""}.
 
 Respond ONLY with a JSON array of day objects. No markdown, no extra text.
 [
@@ -852,16 +880,19 @@ Respond ONLY with a JSON array of day objects. No markdown, no extra text.
     "date": "Mon, Jan 6",
     "theme": "Arrival & First Impressions",
     "items": [
-      {"time": "10:00 AM", "title": "Activity name", "desc": "One sentence description."}
+      {"time": "10:00 AM", "title": "Activity name", "desc": "One sentence description."},
+      ...
     ]
-  }
+  },
+  ...
 ]
-Create ${days.length} day objects covering every day. Include 5-7 time slots per day.`;
+Create ${days.length} day objects covering every day. Include 5-7 time slots per day (morning, midday, afternoon, evening).`;
 
     try {
       const text = await callClaude(prompt);
       const data = JSON.parse(text);
       setSchedule(data);
+      // Save updated trip
       const updated = { ...trip, guide: { ...guide, schedule: data } };
       saveTrip(updated);
     } catch (e) {
@@ -887,7 +918,7 @@ Create ${days.length} day objects covering every day. Include 5-7 time slots per
       )}
       {loading && <Spinner msg={loadMsg} />}
       {existingSchedule && existingSchedule.map((day, i) => (
-        <div className="schedule-day" key={i} style={{ animationDelay: `${i * 60}ms` }}>
+        <div className="schedule-day" key={i} style={{animationDelay:`${i*60}ms`}}>
           <div className="day-header">
             <div className="day-label">{day.day} — {day.theme || ""}</div>
             <div className="day-date">{day.date}</div>
@@ -906,7 +937,7 @@ Create ${days.length} day objects covering every day. Include 5-7 time slots per
         </div>
       ))}
       {existingSchedule && (
-        <button className="btn-ghost" onClick={generateSchedule} style={{ marginTop: 8 }}>↻ Regenerate</button>
+        <button className="btn-ghost" onClick={generateSchedule} style={{marginTop:8}}>↻ Regenerate</button>
       )}
     </div>
   );
@@ -917,44 +948,46 @@ function PackingTab({ packing }) {
   const [checked, setChecked] = useState({});
 
   if (!packing || typeof packing !== "object") {
-    return <div style={{ color: "var(--muted)", padding: "40px 0", textAlign: "center" }}>No packing list generated yet.</div>;
+    return <div style={{color:"var(--muted)",padding:"40px 0",textAlign:"center"}}>No packing list generated yet.</div>;
   }
 
   const cats = Object.entries(packing);
-  const total = cats.reduce((s, [, v]) => s + (v?.length || 0), 0);
+  const total = cats.reduce((s,[,v])=>s+(v?.length||0),0);
   const done = Object.values(checked).filter(Boolean).length;
+
   const toggle = (key) => setChecked(p => ({ ...p, [key]: !p[key] }));
 
   const CAT_ICONS = {
-    Clothing: "👕", Toiletries: "🧴", Tech: "💻", Documents: "📄", Extras: "🎒",
-    Entertainment: "🎧", Health: "💊", Footwear: "👟", Accessories: "⌚", Food: "🍎", Money: "💳",
+    Clothing:"👕", Toiletries:"🧴", Tech:"💻", Documents:"📄", Extras:"🎒",
+    Entertainment:"🎧", Health:"💊", Footwear:"👟", Accessories:"⌚",
+    Food:"🍎", Money:"💳",
   };
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-        <div className="section-tag" style={{ margin: 0, flex: 1 }}>Packing List</div>
-        <div style={{ fontSize: 13, color: "var(--muted)" }}>
-          <span style={{ color: "var(--gold-lt)", fontWeight: 500 }}>{done}</span> / {total} packed
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24}}>
+        <div className="section-tag" style={{margin:0,flex:1}}>Packing List</div>
+        <div style={{fontSize:13,color:"var(--muted)"}}>
+          <span style={{color:"var(--gold-lt)",fontWeight:500}}>{done}</span> / {total} packed
         </div>
       </div>
-      <div style={{ height: 4, background: "var(--border)", borderRadius: 100, overflow: "hidden", marginBottom: 24 }}>
-        <div style={{ height: "100%", background: "linear-gradient(to right,var(--gold),var(--gold-lt))", width: `${(done / total * 100) || 0}%`, transition: "width 0.3s", borderRadius: 100 }} />
+      <div style={{height:4,background:"var(--border)",borderRadius:100,overflow:"hidden",marginBottom:24}}>
+        <div style={{height:"100%",background:"linear-gradient(to right,var(--gold),var(--gold-lt))",width:`${(done/total*100)||0}%`,transition:"width 0.3s",borderRadius:100}} />
       </div>
       <div className="pack-categories">
         {cats.map(([cat, items], ci) => {
-          const catDone = (items || []).filter((_, ii) => checked[`${ci}-${ii}`]).length;
+          const catDone = (items||[]).filter((_,ii) => checked[`${ci}-${ii}`]).length;
           return (
-            <div className="pack-cat" key={ci} style={{ animationDelay: `${ci * 50}ms` }}>
-              <div className="pack-cat-header">{CAT_ICONS[cat] || "📦"} {cat}</div>
-              <div className="pack-progress"><div className="pack-bar" style={{ width: `${items?.length ? (catDone / items.length * 100) : 0}%` }} /></div>
+            <div className="pack-cat" key={ci} style={{animationDelay:`${ci*50}ms`}}>
+              <div className="pack-cat-header">{CAT_ICONS[cat]||"📦"} {cat}</div>
+              <div className="pack-progress"><div className="pack-bar" style={{width:`${items?.length?(catDone/items.length*100):0}%`}} /></div>
               <div className="pack-items">
-                {(items || []).map((item, ii) => {
+                {(items||[]).map((item, ii) => {
                   const k = `${ci}-${ii}`;
                   return (
-                    <div className="pack-item" key={ii} onClick={() => toggle(k)}>
-                      <div className={`pack-check${checked[k] ? " checked" : ""}`}>{checked[k] ? "✓" : ""}</div>
-                      <div className={`pack-label${checked[k] ? " done" : ""}`}>{item}</div>
+                    <div className="pack-item" key={ii} onClick={()=>toggle(k)}>
+                      <div className={`pack-check${checked[k]?" checked":""}`}>{checked[k]?"✓":""}</div>
+                      <div className={`pack-label${checked[k]?" done":""}`}>{item}</div>
                     </div>
                   );
                 })}
@@ -970,22 +1003,30 @@ function PackingTab({ packing }) {
 // ─────────────────────────────────────────────
 // MAIN APP
 // ─────────────────────────────────────────────
-export default function App() {
+export default function TravelApp() {
   const [page, setPage] = useState("dashboard");
   const [trips, setTrips] = useState([]);
   const [activeTrip, setActiveTrip] = useState(null);
   const [toast, setToast] = useState("");
 
-  useEffect(() => { setTrips(loadTrips()); }, []);
+  useEffect(() => {
+    setTrips(loadTrips());
+  }, []);
 
-  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
+  const showToast = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(""), 3000);
+  };
 
   const handleTripSaved = (trip) => {
     setTrips(prev => [trip, ...prev.filter(t => t.id !== trip.id)]);
     showToast("✦ Trip saved to your dashboard");
   };
 
-  const handleSelectTrip = (trip) => { setActiveTrip(trip); setPage("view"); };
+  const handleSelectTrip = (trip) => {
+    setActiveTrip(trip);
+    setPage("view");
+  };
 
   const handleDeleteTrip = (id) => {
     deleteTrip(id);
@@ -994,33 +1035,32 @@ export default function App() {
   };
 
   const NAV = [
-    { id: "dashboard", icon: "🏠", label: "Dashboard" },
-    { id: "plan", icon: "✈️", label: "Plan Trip" },
-    { id: "view", icon: "🗺️", label: "Current Trip", disabled: !activeTrip },
+    { id:"dashboard", icon:"🏠", label:"Dashboard" },
+    { id:"plan",      icon:"✈️", label:"Plan Trip" },
+    { id:"view",      icon:"🗺️", label:"Current Trip", disabled:!activeTrip },
   ];
 
-  const PAGE_TITLES = {
-    dashboard: "Dashboard",
-    plan: "Plan a Trip",
-    view: activeTrip ? `${activeTrip.from} → ${activeTrip.to}` : "Trip Guide",
-  };
+  const PAGE_TITLES = { dashboard:"Dashboard", plan:"Plan a Trip", view:activeTrip?`${activeTrip.from} → ${activeTrip.to}`:"Trip Guide" };
 
   return (
     <>
       <style>{STYLES}</style>
       <div className="app-shell">
+        {/* SIDEBAR */}
         <nav className="sidebar">
           <div className="sidebar-logo">✦<span>Wanderlux</span></div>
           {NAV.map(n => (
             <button key={n.id}
-              className={`nav-btn${page === n.id ? " active" : ""}${n.disabled ? " disabled" : ""}`}
+              className={`nav-btn${page===n.id?" active":""}${n.disabled?" disabled":""}`}
               onClick={() => { if (!n.disabled) setPage(n.id); }}
-              style={n.disabled ? { opacity: 0.35, cursor: "not-allowed" } : {}}>
+              style={n.disabled?{opacity:0.35,cursor:"not-allowed"}:{}}>
               <span className="nav-icon">{n.icon}</span>
               <span className="nav-label">{n.label}</span>
             </button>
           ))}
         </nav>
+
+        {/* MAIN */}
         <main className="main">
           <div className="topbar">
             <div className="topbar-title">{PAGE_TITLES[page]}</div>
@@ -1028,21 +1068,34 @@ export default function App() {
               <div className="online-badge"><div className="dot" />AI Concierge Online</div>
             </div>
           </div>
-          {page === "dashboard" && <DashboardPage trips={trips} onSelectTrip={handleSelectTrip} onNewTrip={() => setPage("plan")} onDeleteTrip={handleDeleteTrip} />}
-          {page === "plan" && <PlanPage onTripSaved={handleTripSaved} />}
-          {page === "view" && activeTrip && <div className="page"><GuideView trip={activeTrip} /></div>}
-          {page === "view" && !activeTrip && (
+
+          {page==="dashboard" && (
+            <DashboardPage
+              trips={trips}
+              onSelectTrip={handleSelectTrip}
+              onNewTrip={()=>setPage("plan")}
+              onDeleteTrip={handleDeleteTrip}
+            />
+          )}
+          {page==="plan" && <PlanPage onTripSaved={handleTripSaved} />}
+          {page==="view" && activeTrip && (
+            <div className="page">
+              <GuideView trip={activeTrip} />
+            </div>
+          )}
+          {page==="view" && !activeTrip && (
             <div className="page">
               <div className="empty-state">
                 <div className="empty-icon">🗺️</div>
                 <div className="empty-text">No trip selected. Go to the Dashboard or plan a new trip.</div>
                 <br />
-                <button className="btn-gold" onClick={() => setPage("plan")}>Plan a Trip</button>
+                <button className="btn-gold" onClick={()=>setPage("plan")}>Plan a Trip</button>
               </div>
             </div>
           )}
         </main>
       </div>
+
       {toast && <div className="toast">{toast}</div>}
     </>
   );
