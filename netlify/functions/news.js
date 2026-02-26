@@ -17,7 +17,7 @@ exports.handler = async (event) => {
   const query = q || "travel tourism destinations";
 
   try {
-    const url = `https://newsdata.io/api/1/news?apikey=${apiKey}&q=${encodeURIComponent(query)}&language=en&category=travel&size=8`;
+    const url = `https://newsdata.io/api/1/news?apikey=${apiKey}&q=${encodeURIComponent(query)}&language=en&size=8`;
     const res = await fetch(url);
     const data = await res.json();
 
