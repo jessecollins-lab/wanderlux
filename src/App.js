@@ -1507,86 +1507,101 @@ function TickerBar({ activeTrip, onAlertsClick, alertCount }) {
     setLoading(true);
     const newItems = [];
 
-    // 1. Exchange rates
-    try {
-      const res = await fetch("/api/rates?base=USD&symbols=EUR,GBP,JPY,AUD,CAD,THB,SGD");
-      const data = await res.json();
-      if (data.rates) {
-        const pairs = [
-          ["EUR","€"],["GBP","£"],["JPY","¥"],["AUD","A$"],["CAD","C$"],["THB","฿"],["SGD","S$"]
-        ];
-        pairs.forEach(([sym,sign]) => {
-          if (data.rates[sym]) {
-            newItems.push({
-              icon:"💱", label:`USD/${sym}`,
-              val:`${sign}${data.rates[sym].toFixed(sym==="JPY"?0:2)}`,
-              type:"rate"
-            });
-          }
-        });
-      }
-    } catch(e) { console.error("Rates error",e); }
+    // Only show trip data if there's an active trip
+    if (!activeTrip) {
+      setItems([{ icon:"🧭", label:"Ask Finn", val:"Plan or open a trip to see live data here", type:"info" }]);
+      setLoading(false);
+      return;
+    }
 
-    // 2. Flight status
-    if (activeTrip?.flightNumber) {
+    // 1. Exchange rates — only for destination currency
+    const DEST_CURRENCY = {
+      // Europe
+      france:"EUR", germany:"EUR", spain:"EUR", italy:"EUR", portugal:"EUR", amsterdam:"EUR", paris:"EUR", barcelona:"EUR", rome:"EUR", lisbon:"EUR", athens:"EUR", greece:"EUR",
+      // UK
+      london:"GBP", uk:"GBP", england:"GBP", scotland:"GBP",
+      // Asia
+      japan:"JPY", tokyo:"JPY", osaka:"JPY", thailand:"THB", bangkok:"THB", singapore:"SGD", china:"CNY", beijing:"CNY", shanghai:"CNY", india:"INR", delhi:"INR", mumbai:"INR", korea:"KRW", seoul:"KRW", vietnam:"VND", hanoi:"VND", "ho chi minh":"VND", indonesia:"IDR", bali:"IDR", malaysia:"MYR", kuala:"MYR",
+      // Americas
+      mexico:"MXN", cancun:"MXN", canada:"CAD", toronto:"CAD", vancouver:"CAD", brazil:"BRL", rio:"BRL", australia:"AUD", sydney:"AUD", melbourne:"AUD", "new zealand":"NZD", auckland:"NZD",
+      // Middle East / Africa
+      dubai:"AED", uae:"AED", morocco:"MAD", marrakech:"MAD", egypt:"EGP", cairo:"EGP", kenya:"KES", nairobi:"KES", "south africa":"ZAR", cape:"ZAR",
+    };
+    const CURRENCY_SYMBOLS = { EUR:"€",GBP:"£",JPY:"¥",THB:"฿",SGD:"S$",CNY:"¥",INR:"₹",KRW:"₩",VND:"₫",IDR:"Rp",MYR:"RM",MXN:"$",CAD:"C$",BRL:"R$",AUD:"A$",NZD:"NZ$",AED:"د.إ",MAD:"MAD",EGP:"£E",KES:"KSh",ZAR:"R" };
+
+    const destLower = (activeTrip.to || "").toLowerCase();
+    let destCurrency = null;
+    for (const [key, cur] of Object.entries(DEST_CURRENCY)) {
+      if (destLower.includes(key)) { destCurrency = cur; break; }
+    }
+
+    if (destCurrency) {
+      try {
+        const res = await fetch(`/api/rates?base=USD&symbols=${destCurrency}`);
+        const data = await res.json();
+        if (data.rates?.[destCurrency]) {
+          const sign = CURRENCY_SYMBOLS[destCurrency] || destCurrency;
+          const rate = data.rates[destCurrency];
+          const formatted = destCurrency === "JPY" || destCurrency === "KRW" || destCurrency === "VND" || destCurrency === "IDR"
+            ? Math.round(rate).toLocaleString()
+            : rate.toFixed(2);
+          newItems.push({ icon:"💱", label:`USD → ${destCurrency}`, val:`${sign}${formatted}`, type:"rate" });
+        }
+      } catch(e) { console.error("Rates error",e); }
+    }
+
+    // 2. Trip dates countdown
+    if (activeTrip.departDate) {
+      const today = new Date();
+      const depart = new Date(activeTrip.departDate + "T00:00:00");
+      const daysUntil = Math.ceil((depart - today) / 86400000);
+      if (daysUntil > 0) {
+        newItems.push({ icon:"📅", label:"Departure", val:`${daysUntil} day${daysUntil===1?"":"s"} to go`, type:"countdown" });
+      } else if (daysUntil === 0) {
+        newItems.push({ icon:"🛫", label:"Departure", val:"Today! Have a great trip!", type:"countdown", colorClass:"t-up" });
+      }
+    }
+
+    // 3. Flight status
+    if (activeTrip.flightNumber) {
       try {
         const fn = encodeURIComponent(activeTrip.flightNumber.replace(/\s/g,""));
         const res = await fetch(`/api/flight?flightNumber=${fn}`);
         const data = await res.json();
         if (data.found) {
-          const statusColor = data.status==="active"?"t-up":data.status==="landed"?"t-up":data.status==="cancelled"?"t-down":"t-warn";
-          const dep = data.departure?.delay > 0 ? ` · Delayed ${data.departure.delay}min` : "";
-          newItems.push({
-            icon:"✈️", label:`${data.flightNumber}`,
-            val:`${data.status?.toUpperCase()}${dep}`,
-            type:"flight", colorClass: statusColor
-          });
-          if (data.departure?.gate) {
-            newItems.push({ icon:"🚪", label:"Gate", val:`${data.departure.iata} ${data.departure.gate}`, type:"flight" });
-          }
-          if (data.arrival?.terminal) {
-            newItems.push({ icon:"🛬", label:"Arrives", val:`${data.arrival.iata} T${data.arrival.terminal}`, type:"flight" });
-          }
+          const statusColor = (data.status==="active"||data.status==="landed") ? "t-up" : data.status==="cancelled" ? "t-down" : "t-warn";
+          const dep = data.departure?.delay > 0 ? ` · +${data.departure.delay}min` : "";
+          newItems.push({ icon:"✈️", label:data.flightNumber, val:`${data.status?.toUpperCase()}${dep}`, type:"flight", colorClass:statusColor });
+          if (data.departure?.gate) newItems.push({ icon:"🚪", label:"Gate", val:`${data.departure.iata} ${data.departure.gate}`, type:"flight" });
+          if (data.arrival?.terminal) newItems.push({ icon:"🛬", label:"Terminal", val:`${data.arrival.iata} T${data.arrival.terminal}`, type:"flight" });
         } else {
           newItems.push({ icon:"✈️", label:activeTrip.flightNumber, val:"No live data yet", type:"flight" });
         }
       } catch(e) { console.error("Flight error",e); }
-    } else if (activeTrip) {
-      newItems.push({ icon:"✈️", label:"Flight", val:"Add flight number to track", type:"flight" });
     }
 
-    // 3. Weather snapshot
-    if (activeTrip?.guide?.weather_forecast?.[0]) {
-      const w = activeTrip.guide.weather_forecast[0];
-      newItems.push({
-        icon:"🌡️", label:activeTrip.to,
-        val:`${w.high_f}°F / ${w.low_f}°F · ${w.condition}`,
-        type:"weather"
+    // 4. Weather snapshot for destination
+    if (activeTrip.guide?.weather_forecast?.length) {
+      activeTrip.guide.weather_forecast.slice(0,3).forEach(w => {
+        newItems.push({ icon:"🌡️", label:`${activeTrip.to} ${w.day}`, val:`${w.high_f}°/${w.low_f}°F · ${w.condition}`, type:"weather" });
       });
-    } else if (activeTrip) {
-      newItems.push({ icon:"🌡️", label:activeTrip.to || "Weather", val:"Generate trip guide for forecast", type:"weather" });
     }
 
-    // 4. Travel news
+    // 5. News about the destination
     try {
-      const res = await fetch("/api/news?q=travel+destinations+tips");
+      const dest = activeTrip.to?.split(",")[0]?.trim() || "travel";
+      const res = await fetch(`/api/news?q=${encodeURIComponent(dest)}`);
       const data = await res.json();
       if (data.articles?.length) {
-        data.articles.slice(0,5).forEach(a => {
-          newItems.push({ icon:"📰", label:a.source||"News", val:a.title, type:"news" });
+        data.articles.slice(0,4).forEach(a => {
+          if (a.title) newItems.push({ icon:"📰", label:a.source||"News", val:a.title, type:"news" });
         });
       }
     } catch(e) { console.error("News error",e); }
 
-    // Fallback if nothing loaded
+    // Fallback
     if (newItems.length === 0) {
-      newItems.push(
-        { icon:"💱", label:"USD/EUR", val:"€0.92", type:"rate" },
-        { icon:"💱", label:"USD/GBP", val:"£0.79", type:"rate" },
-        { icon:"💱", label:"USD/JPY", val:"¥149", type:"rate" },
-        { icon:"✈️", label:"Flight", val:"Plan a trip to see live flight data", type:"flight" },
-        { icon:"📰", label:"Travel", val:"Ask Finn about your next destination", type:"news" },
-      );
+      newItems.push({ icon:"🧭", label:activeTrip.to||"Trip", val:"Generate your guide to see live trip data", type:"info" });
     }
 
     setItems(newItems);
