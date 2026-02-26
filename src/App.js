@@ -1809,15 +1809,15 @@ function TickerBar({ activeTrip, onAlertsClick, alertCount }) {
       // New Zealand
       "new zealand":"NZD", auckland:"NZD", wellington:"NZD",
       // Brazil
-      brazil:"BRL", rio:"BRL", sao paulo:"BRL",
+      brazil:"BRL",rio:"BRL","sao paulo":"BRL",
       // UAE
-      dubai:"AED", abu dhabi:"AED", uae:"AED",
+      dubai:"AED","abu dhabi":"AED",uae:"AED",
       // Morocco
       morocco:"MAD", marrakech:"MAD", casablanca:"MAD",
       // Egypt
       egypt:"EGP", cairo:"EGP",
       // South Africa
-      "south africa":"ZAR", cape town:"ZAR", johannesburg:"ZAR",
+      "south africa":"ZAR","cape town":"ZAR",johannesburg:"ZAR",
       // Kenya
       kenya:"KES", nairobi:"KES",
       // Turkey
