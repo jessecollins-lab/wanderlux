@@ -686,7 +686,73 @@ const STYLES = `
   .pack-progress { height: 2px; background: rgba(255,255,255,0.06); overflow: hidden; margin: 0 16px 10px; border-radius: 100px; }
   .pack-bar { height: 100%; background: linear-gradient(to right, var(--teal), var(--blue-lt)); border-radius: 100px; transition: width 0.35s; }
 
-  /* ── TABS ── */
+  /* ── CURRENCY CONVERTER ── */
+  .converter-wrap { max-width: 560px; margin: 0 auto; }
+  .converter-hero {
+    background: linear-gradient(135deg, rgba(14,184,160,0.1), rgba(26,108,245,0.08));
+    border: 1px solid rgba(14,184,160,0.2);
+    border-radius: var(--r-lg);
+    padding: 28px 28px 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .converter-rate-display {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .converter-rate-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+  .converter-inputs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; }
+  .converter-field { display: flex; flex-direction: column; gap: 6px; }
+  .converter-field label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); font-weight: 600; }
+  .converter-input-wrap { position: relative; }
+  .converter-currency-tag {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; font-weight: 600; color: var(--teal-lt);
+    pointer-events: none;
+  }
+  .converter-input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r-sm);
+    padding: 13px 14px 13px 52px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .converter-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(14,184,160,0.1); }
+  .converter-swap {
+    background: var(--teal-dim);
+    border: 1px solid rgba(14,184,160,0.25);
+    border-radius: 50%;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px;
+    transition: all 0.2s; flex-shrink: 0;
+    color: var(--teal-lt);
+  }
+  .converter-swap:hover { background: rgba(14,184,160,0.22); transform: rotate(180deg); }
+  .converter-quick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 16px; }
+  .converter-quick-btn {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r-sm);
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .converter-quick-btn:hover { background: var(--teal-dim); border-color: rgba(14,184,160,0.25); }
+  .cq-amount { font-size: 13px; color: var(--text-dim); font-family: 'DM Sans', sans-serif; margin-bottom: 3px; }
+  .cq-result { font-size: 16px; font-weight: 600; color: var(--text); font-family: 'DM Sans', sans-serif; }
+  .cq-result span { color: var(--teal-lt); }
+  .converter-updated { font-size: 11px; color: var(--text-dim); text-align: center; margin-top: 14px; }
   .tabs {
     display: flex;
     gap: 2px;
@@ -1304,6 +1370,196 @@ weather_forecast: 5 days realistic for destination/season. packing: 5 categories
 }
 
 // ── GUIDE VIEW ─────────────────────────────────
+// ── CURRENCY TAB ───────────────────────────────
+function CurrencyTab({ trip }) {
+  const DEST_CURRENCY = {
+    france:"EUR",paris:"EUR",germany:"EUR",berlin:"EUR",spain:"EUR",madrid:"EUR",barcelona:"EUR",
+    italy:"EUR",rome:"EUR",milan:"EUR",portugal:"EUR",lisbon:"EUR",porto:"EUR",
+    amsterdam:"EUR",netherlands:"EUR",greece:"EUR",athens:"EUR",austria:"EUR",vienna:"EUR",
+    belgium:"EUR",brussels:"EUR",ireland:"EUR",dublin:"EUR",
+    london:"GBP",uk:"GBP",england:"GBP",scotland:"GBP",manchester:"GBP",edinburgh:"GBP",
+    japan:"JPY",tokyo:"JPY",osaka:"JPY",kyoto:"JPY",
+    thailand:"THB",bangkok:"THB",phuket:"THB",
+    singapore:"SGD",
+    china:"CNY",beijing:"CNY",shanghai:"CNY","hong kong":"HKD",
+    india:"INR",delhi:"INR",mumbai:"INR",bangalore:"INR",
+    korea:"KRW",seoul:"KRW",busan:"KRW",
+    vietnam:"VND",hanoi:"VND","ho chi":"VND",
+    indonesia:"IDR",bali:"IDR",jakarta:"IDR",
+    malaysia:"MYR","kuala lumpur":"MYR",penang:"MYR",
+    philippines:"PHP",manila:"PHP",
+    mexico:"MXN",cancun:"MXN",
+    canada:"CAD",toronto:"CAD",vancouver:"CAD",montreal:"CAD",
+    australia:"AUD",sydney:"AUD",melbourne:"AUD",brisbane:"AUD",
+    "new zealand":"NZD",auckland:"NZD",
+    brazil:"BRL",rio:"BRL",
+    dubai:"AED","abu dhabi":"AED",uae:"AED",
+    morocco:"MAD",marrakech:"MAD",casablanca:"MAD",
+    egypt:"EGP",cairo:"EGP",
+    "south africa":"ZAR","cape town":"ZAR",johannesburg:"ZAR",
+    kenya:"KES",nairobi:"KES",
+    turkey:"TRY",istanbul:"TRY",
+    switzerland:"CHF",zurich:"CHF",geneva:"CHF",
+    sweden:"SEK",stockholm:"SEK",
+    norway:"NOK",oslo:"NOK",
+    denmark:"DKK",copenhagen:"DKK",
+    poland:"PLN",warsaw:"PLN",krakow:"PLN",
+    czech:"CZK",prague:"CZK",
+    hungary:"HUF",budapest:"HUF",
+    israel:"ILS","tel aviv":"ILS",
+    argentina:"ARS","buenos aires":"ARS",
+    colombia:"COP",bogota:"COP",
+    peru:"PEN",lima:"PEN",
+    chile:"CLP",santiago:"CLP",
+  };
+  const CURRENCY_NAMES = {
+    EUR:"Euro",GBP:"British Pound",JPY:"Japanese Yen",THB:"Thai Baht",SGD:"Singapore Dollar",
+    CNY:"Chinese Yuan",HKD:"Hong Kong Dollar",INR:"Indian Rupee",KRW:"South Korean Won",
+    VND:"Vietnamese Dong",IDR:"Indonesian Rupiah",MYR:"Malaysian Ringgit",PHP:"Philippine Peso",
+    MXN:"Mexican Peso",CAD:"Canadian Dollar",BRL:"Brazilian Real",AUD:"Australian Dollar",
+    NZD:"New Zealand Dollar",AED:"UAE Dirham",MAD:"Moroccan Dirham",EGP:"Egyptian Pound",
+    ZAR:"South African Rand",KES:"Kenyan Shilling",TRY:"Turkish Lira",CHF:"Swiss Franc",
+    SEK:"Swedish Krona",NOK:"Norwegian Krone",DKK:"Danish Krone",PLN:"Polish Zloty",
+    CZK:"Czech Koruna",HUF:"Hungarian Forint",ILS:"Israeli Shekel",ARS:"Argentine Peso",
+    COP:"Colombian Peso",PEN:"Peruvian Sol",CLP:"Chilean Peso",
+  };
+  const CURRENCY_SYMBOLS = {
+    EUR:"€",GBP:"£",JPY:"¥",THB:"฿",SGD:"S$",CNY:"¥",HKD:"HK$",INR:"₹",KRW:"₩",
+    VND:"₫",IDR:"Rp",MYR:"RM",PHP:"₱",MXN:"$",CAD:"C$",BRL:"R$",AUD:"A$",NZD:"NZ$",
+    AED:"د.إ",MAD:"MAD",EGP:"£E",ZAR:"R",KES:"KSh",TRY:"₺",CHF:"CHF",SEK:"kr",
+    NOK:"kr",DKK:"kr",PLN:"zł",CZK:"Kč",HUF:"Ft",ILS:"₪",ARS:"$",COP:"$",PEN:"S/",CLP:"$"
+  };
+  const BIG = new Set(["JPY","KRW","VND","IDR","HUF","CLP","COP"]);
+
+  // Detect destination currency
+  const destLower = (trip.to||"").toLowerCase();
+  let destCurrency = "EUR";
+  for (const [key, cur] of Object.entries(DEST_CURRENCY)) {
+    if (destLower.includes(key)) { destCurrency = cur; break; }
+  }
+  if (destCurrency === "EUR") {
+    const firstWord = destLower.split(/[,\s]/)[0];
+    for (const [key, cur] of Object.entries(DEST_CURRENCY)) {
+      if (key.includes(firstWord) || firstWord.includes(key)) { destCurrency = cur; break; }
+    }
+  }
+
+  const [rate, setRate] = useState(null);
+  const [usdAmount, setUsdAmount] = useState("100");
+  const [destAmount, setDestAmount] = useState("");
+  const [direction, setDirection] = useState("from"); // "from" = USD→dest, "to" = dest→USD
+  const [loading, setLoading] = useState(true);
+  const [updated, setUpdated] = useState("");
+
+  useEffect(() => {
+    fetch(`/api/rates?base=USD&symbols=${destCurrency}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.rates?.[destCurrency]) {
+          const r = data.rates[destCurrency];
+          setRate(r);
+          setDestAmount(BIG.has(destCurrency) ? Math.round(100 * r).toLocaleString() : (100 * r).toFixed(2));
+          setUpdated(data.updated ? new Date(data.updated).toLocaleDateString("en-US",{month:"short",day:"numeric"}) : "");
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [destCurrency]);
+
+  const sym = CURRENCY_SYMBOLS[destCurrency] || destCurrency;
+
+  const handleUsdChange = (val) => {
+    setUsdAmount(val);
+    if (rate && val !== "") {
+      const n = parseFloat(val) || 0;
+      setDestAmount(BIG.has(destCurrency) ? Math.round(n * rate).toLocaleString() : (n * rate).toFixed(2));
+    } else setDestAmount("");
+  };
+
+  const handleDestChange = (val) => {
+    setDestAmount(val);
+    if (rate && val !== "") {
+      const n = parseFloat(val.replace(/,/g,"")) || 0;
+      setUsdAmount((n / rate).toFixed(2));
+    } else setUsdAmount("");
+  };
+
+  const swap = () => setDirection(d => d === "from" ? "to" : "from");
+
+  const QUICK_AMOUNTS = [1, 5, 10, 20, 50, 100, 200, 500];
+
+  if (loading) return <div style={{textAlign:"center",padding:"60px",color:"var(--text-muted)"}}>Fetching live rates…</div>;
+  if (!rate) return <div style={{textAlign:"center",padding:"60px",color:"var(--text-muted)"}}>Could not load exchange rates. Try again later.</div>;
+
+  return (
+    <div className="converter-wrap">
+      {/* Rate display */}
+      <div className="converter-hero">
+        <div className="converter-rate-display">
+          {sym}{BIG.has(destCurrency) ? Math.round(rate).toLocaleString() : rate.toFixed(4)}
+        </div>
+        <div className="converter-rate-sub">
+          1 US Dollar = {CURRENCY_NAMES[destCurrency]||destCurrency} · Live rate
+        </div>
+
+        {/* Converter inputs */}
+        <div className="converter-inputs">
+          <div className="converter-field">
+            <label>{direction==="from"?"You have":"You get"}</label>
+            <div className="converter-input-wrap">
+              <span className="converter-currency-tag">$ USD</span>
+              <input
+                className="converter-input"
+                type="number"
+                value={usdAmount}
+                onChange={e=>handleUsdChange(e.target.value)}
+                placeholder="0"
+                min="0"
+              />
+            </div>
+          </div>
+          <button className="converter-swap" onClick={swap} title="Swap">⇄</button>
+          <div className="converter-field">
+            <label>{direction==="from"?"You get":"You have"}</label>
+            <div className="converter-input-wrap">
+              <span className="converter-currency-tag">{sym} {destCurrency}</span>
+              <input
+                className="converter-input"
+                type="text"
+                value={destAmount}
+                onChange={e=>handleDestChange(e.target.value)}
+                placeholder="0"
+              />
+            </div>
+          </div>
+        </div>
+        {updated && <div className="converter-updated">Rate updated {updated}</div>}
+      </div>
+
+      {/* Quick reference */}
+      <div className="section-label">Quick Reference</div>
+      <div className="converter-quick-grid">
+        {QUICK_AMOUNTS.map(amt => (
+          <div className="converter-quick-btn" key={amt} onClick={()=>handleUsdChange(String(amt))}>
+            <div className="cq-amount">${amt} USD</div>
+            <div className="cq-result">
+              <span>{sym}</span>{BIG.has(destCurrency) ? Math.round(amt * rate).toLocaleString() : (amt * rate).toFixed(2)}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Tips */}
+      <div className="glass-card" style={{marginTop:20}}>
+        <div className="card-heading">💡 Finn's Money Tips for {trip.to?.split(",")[0]}</div>
+        <div className="card-body" style={{fontSize:12.5}}>
+          {trip.guide?.currency || `Always notify your bank before travelling to ${trip.to}. Use ATMs inside banks for better rates and lower fees. Avoid airport currency exchange booths — their rates are typically 10–15% worse than the live rate above.`}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function GuideView({trip, onTripUpdated}) {
   const [tab,setTab]=useState("guide");
   const [editing,setEditing]=useState(false);
@@ -1332,7 +1588,7 @@ function GuideView({trip, onTripUpdated}) {
         </div>
       </div>
       <div className="tabs">
-        {[["guide","🗺️ Guide"],["weather","🌤️ Weather"],["schedule","📅 Schedule"],["packing","🎒 Packing"]].map(([k,l])=>(
+        {[["guide","🗺️ Guide"],["weather","🌤️ Weather"],["currency","💱 Currency"],["schedule","📅 Schedule"],["packing","🎒 Packing"]].map(([k,l])=>(
           <button key={k} className={`tab${tab===k?" active":""}`} onClick={()=>setTab(k)}>{l}</button>
         ))}
       </div>
@@ -1348,6 +1604,7 @@ function GuideView({trip, onTripUpdated}) {
         </div>
       )}
       {tab==="weather"&&<WeatherTab forecast={g.weather_forecast} destination={trip.to}/>}
+      {tab==="currency"&&<CurrencyTab trip={trip}/>}
       {tab==="schedule"&&<ScheduleTab trip={trip} guide={g}/>}
       {tab==="packing"&&<PackingTab packing={g.packing}/>}
     </div>
@@ -1514,25 +1771,103 @@ function TickerBar({ activeTrip, onAlertsClick, alertCount }) {
       return;
     }
 
-    // 1. Exchange rates — only for destination currency
+    // 1. Exchange rates — destination currency with broad matching
     const DEST_CURRENCY = {
-      // Europe
-      france:"EUR", germany:"EUR", spain:"EUR", italy:"EUR", portugal:"EUR", amsterdam:"EUR", paris:"EUR", barcelona:"EUR", rome:"EUR", lisbon:"EUR", athens:"EUR", greece:"EUR",
+      // Eurozone
+      france:"EUR", paris:"EUR", germany:"EUR", berlin:"EUR", spain:"EUR", madrid:"EUR", barcelona:"EUR",
+      italy:"EUR", rome:"EUR", milan:"EUR", portugal:"EUR", lisbon:"EUR", porto:"EUR",
+      amsterdam:"EUR", netherlands:"EUR", greece:"EUR", athens:"EUR", austria:"EUR", vienna:"EUR",
+      belgium:"EUR", brussels:"EUR", finland:"EUR", helsinki:"EUR", ireland:"EUR", dublin:"EUR",
       // UK
-      london:"GBP", uk:"GBP", england:"GBP", scotland:"GBP",
-      // Asia
-      japan:"JPY", tokyo:"JPY", osaka:"JPY", thailand:"THB", bangkok:"THB", singapore:"SGD", china:"CNY", beijing:"CNY", shanghai:"CNY", india:"INR", delhi:"INR", mumbai:"INR", korea:"KRW", seoul:"KRW", vietnam:"VND", hanoi:"VND", "ho chi minh":"VND", indonesia:"IDR", bali:"IDR", malaysia:"MYR", kuala:"MYR",
-      // Americas
-      mexico:"MXN", cancun:"MXN", canada:"CAD", toronto:"CAD", vancouver:"CAD", brazil:"BRL", rio:"BRL", australia:"AUD", sydney:"AUD", melbourne:"AUD", "new zealand":"NZD", auckland:"NZD",
-      // Middle East / Africa
-      dubai:"AED", uae:"AED", morocco:"MAD", marrakech:"MAD", egypt:"EGP", cairo:"EGP", kenya:"KES", nairobi:"KES", "south africa":"ZAR", cape:"ZAR",
+      london:"GBP", uk:"GBP", england:"GBP", scotland:"GBP", manchester:"GBP", edinburgh:"GBP",
+      // Japan
+      japan:"JPY", tokyo:"JPY", osaka:"JPY", kyoto:"JPY", sapporo:"JPY",
+      // Thailand
+      thailand:"THB", bangkok:"THB", phuket:"THB", chiang:"THB",
+      // Singapore
+      singapore:"SGD",
+      // China
+      china:"CNY", beijing:"CNY", shanghai:"CNY", shenzhen:"CNY", guangzhou:"CNY", hong:"HKD", "hong kong":"HKD",
+      // India
+      india:"INR", delhi:"INR", mumbai:"INR", bangalore:"INR", chennai:"INR", hyderabad:"INR",
+      // South Korea
+      korea:"KRW", seoul:"KRW", busan:"KRW",
+      // Vietnam
+      vietnam:"VND", hanoi:"VND", saigon:"VND", "ho chi":"VND",
+      // Indonesia
+      indonesia:"IDR", bali:"IDR", jakarta:"IDR",
+      // Malaysia
+      malaysia:"MYR", "kuala lumpur":"MYR", penang:"MYR",
+      // Philippines
+      philippines:"PHP", manila:"PHP", cebu:"PHP",
+      // Mexico
+      mexico:"MXN", cancun:"MXN", cdmx:"MXN",
+      // Canada
+      canada:"CAD", toronto:"CAD", vancouver:"CAD", montreal:"CAD",
+      // Australia
+      australia:"AUD", sydney:"AUD", melbourne:"AUD", brisbane:"AUD",
+      // New Zealand
+      "new zealand":"NZD", auckland:"NZD", wellington:"NZD",
+      // Brazil
+      brazil:"BRL", rio:"BRL", sao paulo:"BRL",
+      // UAE
+      dubai:"AED", abu dhabi:"AED", uae:"AED",
+      // Morocco
+      morocco:"MAD", marrakech:"MAD", casablanca:"MAD",
+      // Egypt
+      egypt:"EGP", cairo:"EGP",
+      // South Africa
+      "south africa":"ZAR", cape town:"ZAR", johannesburg:"ZAR",
+      // Kenya
+      kenya:"KES", nairobi:"KES",
+      // Turkey
+      turkey:"TRY", istanbul:"TRY", ankara:"TRY",
+      // Switzerland
+      switzerland:"CHF", zurich:"CHF", geneva:"CHF",
+      // Sweden
+      sweden:"SEK", stockholm:"SEK",
+      // Norway
+      norway:"NOK", oslo:"NOK",
+      // Denmark
+      denmark:"DKK", copenhagen:"DKK",
+      // Poland
+      poland:"PLN", warsaw:"PLN", krakow:"PLN",
+      // Czech
+      czech:"CZK", prague:"CZK",
+      // Hungary
+      hungary:"HUF", budapest:"HUF",
+      // Israel
+      israel:"ILS", "tel aviv":"ILS",
+      // Argentina
+      argentina:"ARS", "buenos aires":"ARS",
+      // Colombia
+      colombia:"COP", bogota:"COP",
+      // Peru
+      peru:"PEN", lima:"PEN",
+      // Chile
+      chile:"CLP", santiago:"CLP",
     };
-    const CURRENCY_SYMBOLS = { EUR:"€",GBP:"£",JPY:"¥",THB:"฿",SGD:"S$",CNY:"¥",INR:"₹",KRW:"₩",VND:"₫",IDR:"Rp",MYR:"RM",MXN:"$",CAD:"C$",BRL:"R$",AUD:"A$",NZD:"NZ$",AED:"د.إ",MAD:"MAD",EGP:"£E",KES:"KSh",ZAR:"R" };
+    const CURRENCY_SYMBOLS = {
+      EUR:"€", GBP:"£", JPY:"¥", THB:"฿", SGD:"S$", CNY:"¥", HKD:"HK$", INR:"₹",
+      KRW:"₩", VND:"₫", IDR:"Rp", MYR:"RM", PHP:"₱", MXN:"$", CAD:"C$", BRL:"R$",
+      AUD:"A$", NZD:"NZ$", AED:"د.إ", MAD:"MAD", EGP:"£E", ZAR:"R", KES:"KSh",
+      TRY:"₺", CHF:"CHF", SEK:"kr", NOK:"kr", DKK:"kr", PLN:"zł", CZK:"Kč",
+      HUF:"Ft", ILS:"₪", ARS:"$", COP:"$", PEN:"S/", CLP:"$"
+    };
+    const BIG_CURRENCIES = new Set(["JPY","KRW","VND","IDR","HUF","CLP","COP"]);
 
     const destLower = (activeTrip.to || "").toLowerCase();
     let destCurrency = null;
+    // Try progressively shorter matches
     for (const [key, cur] of Object.entries(DEST_CURRENCY)) {
       if (destLower.includes(key)) { destCurrency = cur; break; }
+    }
+    // If no match, try just first word of destination
+    if (!destCurrency) {
+      const firstWord = destLower.split(/[,\s]/)[0];
+      for (const [key, cur] of Object.entries(DEST_CURRENCY)) {
+        if (key.includes(firstWord) || firstWord.includes(key)) { destCurrency = cur; break; }
+      }
     }
 
     if (destCurrency) {
@@ -1542,10 +1877,10 @@ function TickerBar({ activeTrip, onAlertsClick, alertCount }) {
         if (data.rates?.[destCurrency]) {
           const sign = CURRENCY_SYMBOLS[destCurrency] || destCurrency;
           const rate = data.rates[destCurrency];
-          const formatted = destCurrency === "JPY" || destCurrency === "KRW" || destCurrency === "VND" || destCurrency === "IDR"
+          const formatted = BIG_CURRENCIES.has(destCurrency)
             ? Math.round(rate).toLocaleString()
             : rate.toFixed(2);
-          newItems.push({ icon:"💱", label:`USD → ${destCurrency}`, val:`${sign}${formatted}`, type:"rate" });
+          newItems.push({ icon:"💱", label:`$1 USD → ${destCurrency}`, val:`${sign}${formatted}`, type:"rate", colorClass:"t-up" });
         }
       } catch(e) { console.error("Rates error",e); }
     }
