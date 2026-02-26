@@ -330,6 +330,60 @@ const STYLES = `
   }
   .glass-card:hover { border-color: rgba(14,184,160,0.25); background: var(--glass-hover); }
 
+  /* ── EDIT MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+  }
+  .modal {
+    background: rgba(4,21,40,0.97);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(14,184,160,0.2);
+    border-radius: var(--r-xl);
+    width: 100%; max-width: 620px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    animation: modalIn 0.25s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes modalIn { from{opacity:0;transform:scale(0.96) translateY(10px);} to{opacity:1;transform:none;} }
+  .modal-header {
+    padding: 22px 26px 16px;
+    border-bottom: 1px solid var(--glass-border);
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0;
+    background: rgba(4,21,40,0.97);
+    backdrop-filter: blur(20px);
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+  }
+  .modal-title { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--white); }
+  .modal-close {
+    background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
+    border-radius: 8px; color: var(--text-muted); cursor: pointer;
+    font-size: 16px; width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+  .modal-body { padding: 22px 26px; }
+  .modal-footer {
+    padding: 16px 26px 22px;
+    border-top: 1px solid var(--glass-border);
+    display: flex; gap: 10px; justify-content: flex-end;
+  }
+  .modal-section-label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--teal); font-weight: 600; margin: 18px 0 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal-section-label::after { content:''; flex:1; height:1px; background: linear-gradient(to right, rgba(14,184,160,0.2), transparent); }
+  .modal-section-label:first-child { margin-top: 0; }
+
+
   .card-label {
     font-size: 10px;
     letter-spacing: 0.25em;
@@ -1024,7 +1078,103 @@ function ChatPage() {
 }
 
 // ── DASHBOARD ──────────────────────────────────
-function DashboardPage({trips, onSelectTrip, onNewTrip, onDeleteTrip}) {
+
+// ── EDIT TRIP MODAL ────────────────────────────
+function EditTripModal({ trip, onSave, onClose }) {
+  const [form, setForm] = useState({
+    from:         trip.from         || "",
+    to:           trip.to           || "",
+    departDate:   trip.departDate   || "",
+    returnDate:   trip.returnDate   || "",
+    airline:      trip.airline      || "",
+    flightNumber: trip.flightNumber || "",
+    hotel:        trip.hotel        || "",
+    interests:    trip.interests    || "",
+  });
+  const [saving, setSaving] = useState(false);
+
+  const upd = (k, v) => setForm(p => ({ ...p, [k]: v }));
+
+  const handleSave = () => {
+    setSaving(true);
+    const updated = { ...trip, ...form };
+    saveTrip(updated);
+    setTimeout(() => {
+      onSave(updated);
+      setSaving(false);
+    }, 300);
+  };
+
+  const changed = Object.keys(form).some(k => form[k] !== (trip[k] || ""));
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <div className="modal-title">✏️ Edit Trip Details</div>
+          <button className="modal-close" onClick={onClose}>×</button>
+        </div>
+        <div className="modal-body">
+          <div className="modal-section-label">Route & Dates</div>
+          <div className="form-grid">
+            <div className="field"><label>Flying From</label>
+              <input placeholder="e.g. New York, JFK" value={form.from} onChange={e=>upd("from",e.target.value)}/>
+            </div>
+            <div className="field"><label>Destination</label>
+              <input placeholder="e.g. Paris, CDG" value={form.to} onChange={e=>upd("to",e.target.value)}/>
+            </div>
+            <div className="field"><label>Departure Date</label>
+              <input type="date" value={form.departDate} onChange={e=>upd("departDate",e.target.value)}/>
+            </div>
+            <div className="field"><label>Return Date</label>
+              <input type="date" value={form.returnDate} onChange={e=>upd("returnDate",e.target.value)}/>
+            </div>
+          </div>
+
+          <div className="modal-section-label">Flight Details</div>
+          <div className="form-grid">
+            <div className="field"><label>Airline</label>
+              <input placeholder="e.g. Air France" value={form.airline} onChange={e=>upd("airline",e.target.value)}/>
+            </div>
+            <div className="field"><label>Flight Number</label>
+              <input placeholder="e.g. AF 007" value={form.flightNumber} onChange={e=>upd("flightNumber",e.target.value)}/>
+            </div>
+          </div>
+
+          <div className="modal-section-label">Stay & Interests</div>
+          <div className="form-grid">
+            <div className="field"><label>Hotel / Area</label>
+              <input placeholder="e.g. Le Marais, 4th Arr." value={form.hotel} onChange={e=>upd("hotel",e.target.value)}/>
+            </div>
+            <div className="field"><label>Interests</label>
+              <input placeholder="e.g. food, art, hiking" value={form.interests} onChange={e=>upd("interests",e.target.value)}/>
+            </div>
+          </div>
+
+          {changed && (
+            <div style={{
+              marginTop:18, padding:"12px 16px",
+              background:"rgba(14,184,160,0.07)",
+              border:"1px solid rgba(14,184,160,0.18)",
+              borderRadius:"var(--r-sm)",
+              fontSize:12, color:"var(--text-muted)", lineHeight:1.6
+            }}>
+              💡 <strong style={{color:"var(--teal-lt)"}}>Tip:</strong> Saving these changes won't regenerate your guide. If you changed the destination or dates significantly, consider regenerating from the Plan page.
+            </div>
+          )}
+        </div>
+        <div className="modal-footer">
+          <button className="btn-ghost" onClick={onClose}>Cancel</button>
+          <button className="btn-primary" onClick={handleSave} disabled={saving || !form.from || !form.to}>
+            {saving ? "Saving…" : "Save Changes"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DashboardPage({trips, onSelectTrip, onNewTrip, onDeleteTrip, onEditTrip}) {
   return (
     <div className="page">
       <div className="page-eyebrow">Your Travel Hub</div>
@@ -1058,6 +1208,7 @@ function DashboardPage({trips, onSelectTrip, onNewTrip, onDeleteTrip}) {
               </div>
               <div className="trip-card-actions">
                 <button className="btn-ghost" onClick={()=>onSelectTrip(t)}>Open →</button>
+                <button className="btn-ghost" onClick={e=>{e.stopPropagation();onEditTrip(t);}}>✏️ Edit</button>
                 <button className="btn-danger" onClick={e=>{e.stopPropagation();onDeleteTrip(t.id);}}>Delete</button>
               </div>
             </div>
@@ -1153,11 +1304,19 @@ weather_forecast: 5 days realistic for destination/season. packing: 5 categories
 }
 
 // ── GUIDE VIEW ─────────────────────────────────
-function GuideView({trip}) {
+function GuideView({trip, onTripUpdated}) {
   const [tab,setTab]=useState("guide");
+  const [editing,setEditing]=useState(false);
   const g=trip.guide||{};
   return (
     <div style={{marginTop:8}}>
+      {editing && (
+        <EditTripModal
+          trip={trip}
+          onSave={updated=>{ onTripUpdated(updated); setEditing(false); }}
+          onClose={()=>setEditing(false)}
+        />
+      )}
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
         <div>
           <div style={{fontFamily:"'Playfair Display',serif",fontSize:"1.25rem",color:"var(--white)"}}>
@@ -1167,7 +1326,10 @@ function GuideView({trip}) {
             {formatDate(trip.departDate)} – {formatDate(trip.returnDate)} · {daysBetween(trip.departDate,trip.returnDate)} nights
           </div>
         </div>
-        <button className="btn-ghost" onClick={()=>navigator.clipboard?.writeText(`My trip: ${trip.from} → ${trip.to}\n${formatDate(trip.departDate)} – ${formatDate(trip.returnDate)}\nPlanned by Ask Finn`)}>Share ↗</button>
+        <div style={{display:"flex",gap:8}}>
+          <button className="btn-ghost" onClick={()=>setEditing(true)}>✏️ Edit</button>
+          <button className="btn-ghost" onClick={()=>navigator.clipboard?.writeText(`My trip: ${trip.from} → ${trip.to}\n${formatDate(trip.departDate)} – ${formatDate(trip.returnDate)}\nPlanned by Ask Finn`)}>Share ↗</button>
+        </div>
       </div>
       <div className="tabs">
         {[["guide","🗺️ Guide"],["weather","🌤️ Weather"],["schedule","📅 Schedule"],["packing","🎒 Packing"]].map(([k,l])=>(
@@ -1594,13 +1756,13 @@ export default function App() {
   const [toast,setToast]=useState("");
   const [showAlerts,setShowAlerts]=useState(false);
   const [alertCount,setAlertCount]=useState(0);
+  const [editingTrip,setEditingTrip]=useState(null);
 
   useEffect(()=>{setTrips(loadTrips());},[]);
 
-  // Estimate alert count when active trip changes
   useEffect(()=>{
     if (!activeTrip) { setAlertCount(0); return; }
-    let count = 1; // price tracking always active
+    let count = 1;
     if (activeTrip.flightNumber) count++;
     if (activeTrip.to) count++;
     setAlertCount(count);
@@ -1610,6 +1772,13 @@ export default function App() {
   const handleTripSaved=trip=>{setTrips(p=>[trip,...p.filter(t=>t.id!==trip.id)]);showToast("✦ Trip saved by Finn");};
   const handleSelectTrip=trip=>{setActiveTrip(trip);setPage("view");};
   const handleDeleteTrip=id=>{deleteTrip(id);setTrips(p=>p.filter(t=>t.id!==id));showToast("Trip deleted");};
+  const handleEditTrip=trip=>{setEditingTrip(trip);};
+  const handleTripUpdated=updated=>{
+    setTrips(p=>p.map(t=>t.id===updated.id?updated:t));
+    if (activeTrip?.id===updated.id) setActiveTrip(updated);
+    setEditingTrip(null);
+    showToast("✦ Trip details updated");
+  };
 
   const NAV=[
     {id:"dashboard",icon:"🏠",label:"Dashboard"},
@@ -1660,10 +1829,10 @@ export default function App() {
           />
 
           {/* PAGES */}
-          {page==="dashboard"&&<DashboardPage trips={trips} onSelectTrip={handleSelectTrip} onNewTrip={()=>setPage("plan")} onDeleteTrip={handleDeleteTrip}/>}
+          {page==="dashboard"&&<DashboardPage trips={trips} onSelectTrip={handleSelectTrip} onNewTrip={()=>setPage("plan")} onDeleteTrip={handleDeleteTrip} onEditTrip={handleEditTrip}/>}
           {page==="plan"&&<PlanPage onTripSaved={handleTripSaved}/>}
           {page==="chat"&&<ChatPage/>}
-          {page==="view"&&activeTrip&&<div className="page"><GuideView trip={activeTrip}/></div>}
+          {page==="view"&&activeTrip&&<div className="page"><GuideView trip={activeTrip} onTripUpdated={handleTripUpdated}/></div>}
           {page==="view"&&!activeTrip&&(
             <div className="page">
               <div className="empty-state">
@@ -1676,6 +1845,15 @@ export default function App() {
           )}
         </main>
       </div>
+
+      {/* EDIT TRIP MODAL (from Dashboard) */}
+      {editingTrip && (
+        <EditTripModal
+          trip={editingTrip}
+          onSave={handleTripUpdated}
+          onClose={()=>setEditingTrip(null)}
+        />
+      )}
 
       {/* ALERTS PANEL */}
       {showAlerts && (
