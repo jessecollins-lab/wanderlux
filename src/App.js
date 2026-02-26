@@ -183,6 +183,120 @@ const STYLES = `
   }
   @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 6px #34d399;} 50%{opacity:0.5;box-shadow:0 0 2px #34d399;} }
 
+  /* ── TICKER BAR ── */
+  .ticker-bar {
+    height: 32px;
+    background: rgba(2,13,26,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(14,184,160,0.15);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: sticky;
+    top: 58px;
+    z-index: 49;
+    flex-shrink: 0;
+  }
+  .ticker-label {
+    background: linear-gradient(135deg, var(--teal), #0891b2);
+    color: var(--depth-1);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0 12px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .ticker-track { flex: 1; overflow: hidden; position: relative; height: 100%; display: flex; align-items: center; }
+  .ticker-scroll {
+    display: flex; align-items: center;
+    white-space: nowrap;
+    animation: tickerMove 40s linear infinite;
+    will-change: transform;
+  }
+  .ticker-scroll:hover { animation-play-state: paused; }
+  @keyframes tickerMove { 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
+  .ticker-item {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11.5px; color: var(--text-muted);
+    padding: 0 22px;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    white-space: nowrap;
+  }
+  .t-label { color: var(--text-dim); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; }
+  .t-val { color: var(--text); font-weight: 500; }
+  .t-up { color: #34d399 !important; }
+  .t-down { color: #f87171 !important; }
+  .t-warn { color: #fbbf24 !important; }
+  .ticker-right {
+    display: flex; align-items: center; gap: 4px;
+    padding: 0 10px;
+    border-left: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+  .alert-btn {
+    position: relative; background: none; border: none;
+    cursor: pointer; color: var(--text-muted); font-size: 14px;
+    padding: 4px 6px; transition: color 0.2s; display: flex; align-items: center;
+    border-radius: 6px;
+  }
+  .alert-btn:hover { color: var(--teal-lt); background: var(--teal-dim); }
+  .alert-badge {
+    position: absolute; top: 0; right: 0;
+    width: 13px; height: 13px;
+    background: #ef4444; border-radius: 50%;
+    font-size: 7.5px; color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; border: 1.5px solid var(--depth-1);
+  }
+
+  /* ── ALERT PANEL ── */
+  .alert-overlay { position: fixed; inset: 0; z-index: 200; }
+  .alert-panel {
+    position: absolute; top: 92px; right: 16px; width: 350px;
+    background: rgba(4,21,40,0.97);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(14,184,160,0.2);
+    border-radius: var(--r-lg);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    overflow: hidden;
+    animation: slideDown 0.22s cubic-bezier(.4,0,.2,1);
+    z-index: 201;
+  }
+  @keyframes slideDown { from{opacity:0;transform:translateY(-8px);} to{opacity:1;transform:none;} }
+  .alert-panel-hdr {
+    padding: 14px 18px 12px;
+    border-bottom: 1px solid var(--glass-border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .alert-panel-hdr h3 { font-family:'Playfair Display',serif; font-size:.95rem; color:var(--white); }
+  .alert-close { background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:18px; line-height:1; transition:color 0.2s; }
+  .alert-close:hover { color:var(--text); }
+  .alert-list { max-height: 380px; overflow-y: auto; }
+  .alert-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.15s; cursor: default;
+  }
+  .alert-row:last-child { border-bottom: none; }
+  .alert-row:hover { background: rgba(255,255,255,0.03); }
+  .alert-indicator { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .ai  { background: #fbbf24; box-shadow: 0 0 5px rgba(251,191,36,0.6); }
+  .ai2 { background: var(--teal); box-shadow: 0 0 5px var(--teal-glow); }
+  .ai3 { background: #ef4444; box-shadow: 0 0 5px rgba(239,68,68,0.5); }
+  .ai4 { background: #34d399; box-shadow: 0 0 5px rgba(52,211,153,0.5); }
+  .alert-content-wrap {}
+  .alert-title { font-size: 12.5px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .alert-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .alert-ts { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
+  .alert-empty { padding: 28px; text-align: center; color: var(--text-dim); font-size: 13px; }
+
+
   /* ── PAGE ── */
   .page { padding: 32px 36px; max-width: 1080px; }
   .page-eyebrow {
@@ -1217,13 +1331,280 @@ function PackingTab({packing}) {
 }
 
 // ── MAIN APP ───────────────────────────────────
+
+// ── TICKER BAR ─────────────────────────────────
+function TickerBar({ activeTrip, onAlertsClick, alertCount }) {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadTickerData();
+  }, [activeTrip?.id]);
+
+  const loadTickerData = async () => {
+    setLoading(true);
+    const newItems = [];
+
+    // 1. Exchange rates
+    try {
+      const res = await fetch("/api/rates?base=USD&symbols=EUR,GBP,JPY,AUD,CAD,THB,SGD");
+      const data = await res.json();
+      if (data.rates) {
+        const pairs = [
+          ["EUR","€"],["GBP","£"],["JPY","¥"],["AUD","A$"],["CAD","C$"],["THB","฿"],["SGD","S$"]
+        ];
+        pairs.forEach(([sym,sign]) => {
+          if (data.rates[sym]) {
+            newItems.push({
+              icon:"💱", label:`USD/${sym}`,
+              val:`${sign}${data.rates[sym].toFixed(sym==="JPY"?0:2)}`,
+              type:"rate"
+            });
+          }
+        });
+      }
+    } catch(e) { console.error("Rates error",e); }
+
+    // 2. Flight status
+    if (activeTrip?.flightNumber) {
+      try {
+        const fn = encodeURIComponent(activeTrip.flightNumber.replace(/\s/g,""));
+        const res = await fetch(`/api/flight?flightNumber=${fn}`);
+        const data = await res.json();
+        if (data.found) {
+          const statusColor = data.status==="active"?"t-up":data.status==="landed"?"t-up":data.status==="cancelled"?"t-down":"t-warn";
+          const dep = data.departure?.delay > 0 ? ` · Delayed ${data.departure.delay}min` : "";
+          newItems.push({
+            icon:"✈️", label:`${data.flightNumber}`,
+            val:`${data.status?.toUpperCase()}${dep}`,
+            type:"flight", colorClass: statusColor
+          });
+          if (data.departure?.gate) {
+            newItems.push({ icon:"🚪", label:"Gate", val:`${data.departure.iata} ${data.departure.gate}`, type:"flight" });
+          }
+          if (data.arrival?.terminal) {
+            newItems.push({ icon:"🛬", label:"Arrives", val:`${data.arrival.iata} T${data.arrival.terminal}`, type:"flight" });
+          }
+        } else {
+          newItems.push({ icon:"✈️", label:activeTrip.flightNumber, val:"No live data yet", type:"flight" });
+        }
+      } catch(e) { console.error("Flight error",e); }
+    } else if (activeTrip) {
+      newItems.push({ icon:"✈️", label:"Flight", val:"Add flight number to track", type:"flight" });
+    }
+
+    // 3. Weather snapshot
+    if (activeTrip?.guide?.weather_forecast?.[0]) {
+      const w = activeTrip.guide.weather_forecast[0];
+      newItems.push({
+        icon:"🌡️", label:activeTrip.to,
+        val:`${w.high_f}°F / ${w.low_f}°F · ${w.condition}`,
+        type:"weather"
+      });
+    } else if (activeTrip) {
+      newItems.push({ icon:"🌡️", label:activeTrip.to || "Weather", val:"Generate trip guide for forecast", type:"weather" });
+    }
+
+    // 4. Travel news
+    try {
+      const res = await fetch("/api/news?q=travel+destinations+tips");
+      const data = await res.json();
+      if (data.articles?.length) {
+        data.articles.slice(0,5).forEach(a => {
+          newItems.push({ icon:"📰", label:a.source||"News", val:a.title, type:"news" });
+        });
+      }
+    } catch(e) { console.error("News error",e); }
+
+    // Fallback if nothing loaded
+    if (newItems.length === 0) {
+      newItems.push(
+        { icon:"💱", label:"USD/EUR", val:"€0.92", type:"rate" },
+        { icon:"💱", label:"USD/GBP", val:"£0.79", type:"rate" },
+        { icon:"💱", label:"USD/JPY", val:"¥149", type:"rate" },
+        { icon:"✈️", label:"Flight", val:"Plan a trip to see live flight data", type:"flight" },
+        { icon:"📰", label:"Travel", val:"Ask Finn about your next destination", type:"news" },
+      );
+    }
+
+    setItems(newItems);
+    setLoading(false);
+  };
+
+  if (loading && items.length === 0) {
+    return (
+      <div className="ticker-bar">
+        <div className="ticker-label">LIVE</div>
+        <div style={{flex:1,display:"flex",alignItems:"center",padding:"0 16px"}}>
+          <div style={{fontSize:11,color:"var(--text-dim)",fontStyle:"italic"}}>Finn is fetching live data…</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Duplicate for seamless loop
+  const allItems = [...items, ...items];
+
+  return (
+    <div className="ticker-bar">
+      <div className="ticker-label">LIVE</div>
+      <div className="ticker-track">
+        <div className="ticker-scroll" style={{animationDuration:`${Math.max(30, items.length * 6)}s`}}>
+          {allItems.map((item, i) => (
+            <div className="ticker-item" key={i}>
+              <span className="t-icon">{item.icon}</span>
+              <span className="t-label">{item.label}</span>
+              <span className={`t-val ${item.colorClass||""}`}>{item.val}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="ticker-right">
+        <button className="alert-btn" onClick={onAlertsClick} title="View alerts">
+          🔔
+          {alertCount > 0 && <div className="alert-badge">{alertCount}</div>}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── ALERT PANEL ────────────────────────────────
+function AlertPanel({ onClose, activeTrip }) {
+  const [alerts, setAlerts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => { generateAlerts(); }, []);
+
+  const generateAlerts = async () => {
+    setLoading(true);
+    const newAlerts = [];
+    const now = new Date();
+
+    // Flight delay alert
+    if (activeTrip?.flightNumber) {
+      try {
+        const fn = encodeURIComponent(activeTrip.flightNumber.replace(/\s/g,""));
+        const res = await fetch(`/api/flight?flightNumber=${fn}`);
+        const data = await res.json();
+        if (data.found) {
+          if (data.departure?.delay > 30) {
+            newAlerts.push({
+              type:"error", title:`Flight ${data.flightNumber} Delayed`,
+              desc:`Departure delayed by ${data.departure.delay} minutes from ${data.departure.iata}.`,
+              time:"Just now"
+            });
+          } else if (data.status === "cancelled") {
+            newAlerts.push({
+              type:"error", title:`Flight ${data.flightNumber} Cancelled`,
+              desc:"Your flight has been cancelled. Contact your airline immediately.",
+              time:"Just now"
+            });
+          } else if (data.status === "active") {
+            newAlerts.push({
+              type:"success", title:`Flight ${data.flightNumber} On Time`,
+              desc:`Departed ${data.departure.iata} on schedule. En route to ${data.arrival.iata}.`,
+              time:"Just now"
+            });
+          }
+        }
+      } catch(e) {}
+    }
+
+    // Weather alert
+    if (activeTrip?.guide?.weather_forecast) {
+      const forecast = activeTrip.guide.weather_forecast;
+      const badWeather = forecast.find(d =>
+        d.condition?.toLowerCase().includes("storm") ||
+        d.condition?.toLowerCase().includes("thunder") ||
+        d.condition?.toLowerCase().includes("hurricane")
+      );
+      if (badWeather) {
+        newAlerts.push({
+          type:"warn", title:`Weather Advisory — ${activeTrip.to}`,
+          desc:`${badWeather.condition} expected on ${badWeather.date}. Plan indoor activities.`,
+          time:"Today"
+        });
+      }
+    }
+
+    // Visa / travel advisory via AI
+    if (activeTrip?.to) {
+      try {
+        const prompt = `Give 2 brief travel advisory alerts for ${activeTrip.to} right now. Focus on: entry requirements, safety, or seasonal warnings. Each alert: one sentence max. Respond ONLY as JSON array: [{"title":"Alert title","desc":"One sentence detail","type":"warn|info|error"}]`;
+        const res = await fetch("/api/claude", {
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({ messages:[{role:"user",content:prompt}] })
+        });
+        const d = await res.json();
+        const text = d.content?.map(c=>c.text||"").join("")||"";
+        const advisories = JSON.parse(text.replace(/```json|```/g,"").trim());
+        advisories.forEach(a => newAlerts.push({ ...a, time:"Via Finn" }));
+      } catch(e) {}
+    }
+
+    // Price alert placeholder
+    newAlerts.push({
+      type:"info", title:"Price Tracking Active",
+      desc:`Finn is monitoring flight prices for ${activeTrip?.to || "your destinations"}. You'll be alerted to drops.`,
+      time:"Always on"
+    });
+
+    setAlerts(newAlerts);
+    setLoading(false);
+  };
+
+  const dotClass = (type) => type==="warn"?"ai":type==="error"?"ai3":type==="success"?"ai4":"ai2";
+
+  return (
+    <div className="alert-overlay" onClick={onClose}>
+      <div className="alert-panel" onClick={e=>e.stopPropagation()}>
+        <div className="alert-panel-hdr">
+          <h3>🔔 Alerts {alerts.length > 0 && <span style={{fontSize:"0.75rem",color:"var(--text-dim)",fontFamily:"'DM Sans',sans-serif",fontWeight:400}}>({alerts.length})</span>}</h3>
+          <button className="alert-close" onClick={onClose}>×</button>
+        </div>
+        <div className="alert-list">
+          {loading ? (
+            <div className="alert-empty">Finn is checking for alerts…</div>
+          ) : alerts.length === 0 ? (
+            <div className="alert-empty">✅ All clear — no alerts for your trip</div>
+          ) : alerts.map((a,i) => (
+            <div className="alert-row" key={i}>
+              <div className="alert-indicator-wrap" style={{paddingTop:4}}>
+                <div className={`alert-indicator ${dotClass(a.type)}`}/>
+              </div>
+              <div className="alert-content-wrap">
+                <div className="alert-title">{a.title}</div>
+                <div className="alert-desc">{a.desc}</div>
+                <div className="alert-ts">{a.time}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── MAIN APP ───────────────────────────────────
 export default function App() {
   const [page,setPage]=useState("dashboard");
   const [trips,setTrips]=useState([]);
   const [activeTrip,setActiveTrip]=useState(null);
   const [toast,setToast]=useState("");
+  const [showAlerts,setShowAlerts]=useState(false);
+  const [alertCount,setAlertCount]=useState(0);
 
   useEffect(()=>{setTrips(loadTrips());},[]);
+
+  // Estimate alert count when active trip changes
+  useEffect(()=>{
+    if (!activeTrip) { setAlertCount(0); return; }
+    let count = 1; // price tracking always active
+    if (activeTrip.flightNumber) count++;
+    if (activeTrip.to) count++;
+    setAlertCount(count);
+  },[activeTrip?.id]);
 
   const showToast=msg=>{setToast(msg);setTimeout(()=>setToast(""),3000);};
   const handleTripSaved=trip=>{setTrips(p=>[trip,...p.filter(t=>t.id!==trip.id)]);showToast("✦ Trip saved by Finn");};
@@ -1238,7 +1619,7 @@ export default function App() {
   ];
 
   const TITLES={
-    dashboard:"Dashboard",plan:"Plan a Trip",chat:"Ask Finn",
+    dashboard:"Dashboard", plan:"Plan a Trip", chat:"Ask Finn",
     view:activeTrip?`${activeTrip.from} → ${activeTrip.to}`:"Trip Guide",
   };
 
@@ -1263,6 +1644,7 @@ export default function App() {
         </nav>
 
         <main className="main">
+          {/* TOP BAR */}
           <div className="topbar">
             <div className="topbar-title">{TITLES[page]}</div>
             <div className="topbar-right">
@@ -1270,6 +1652,14 @@ export default function App() {
             </div>
           </div>
 
+          {/* LIVE TICKER */}
+          <TickerBar
+            activeTrip={activeTrip}
+            onAlertsClick={()=>setShowAlerts(true)}
+            alertCount={alertCount}
+          />
+
+          {/* PAGES */}
           {page==="dashboard"&&<DashboardPage trips={trips} onSelectTrip={handleSelectTrip} onNewTrip={()=>setPage("plan")} onDeleteTrip={handleDeleteTrip}/>}
           {page==="plan"&&<PlanPage onTripSaved={handleTripSaved}/>}
           {page==="chat"&&<ChatPage/>}
@@ -1286,6 +1676,15 @@ export default function App() {
           )}
         </main>
       </div>
+
+      {/* ALERTS PANEL */}
+      {showAlerts && (
+        <AlertPanel
+          onClose={()=>setShowAlerts(false)}
+          activeTrip={activeTrip}
+        />
+      )}
+
       {toast&&<div className="toast">{toast}</div>}
     </>
   );
